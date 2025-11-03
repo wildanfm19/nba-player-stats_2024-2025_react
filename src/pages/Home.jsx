@@ -125,6 +125,7 @@ function Home() {
                   <div className="text-sm text-gray-600"><strong>Showing {Math.min(filteredPlayers.length, page * pageSize)} of {filteredPlayers.length}</strong></div>
 
                   <button
+                    onMouseDown={(e) => e.preventDefault()}
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page === 1}
                     className="px-3 py-1 rounded border cursor-pointer bg-black text-white"
@@ -133,6 +134,7 @@ function Home() {
                   <div className="text-sm text-gray-600">Page {page} / {Math.max(1, Math.ceil(filteredPlayers.length / pageSize))}</div>
 
                   <button
+                    onMouseDown={(e) => e.preventDefault()}
                     onClick={() => setPage((p) => Math.min(Math.ceil(filteredPlayers.length / pageSize), p + 1))}
                     disabled={page >= Math.ceil(filteredPlayers.length / pageSize)}
                     className="px-3 py-1 rounded border cursor-pointer bg-black text-white"
