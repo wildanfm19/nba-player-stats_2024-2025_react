@@ -2,9 +2,6 @@ import React, { useEffect, useState, useMemo } from 'react'
 import axios from 'axios'
 import PlayersTable from '../components/PlayersTable'
 import nbaLogo from '../assets/images/nba-logo.png'
-import { ArrowLeft } from 'lucide-react';
-
-// import any team logos placed under src/assets/images/teams (filenames should match team code, e.g. MIL.png)
 const teamLogos = import.meta.glob('../assets/images/teams/*.{png,jpg,svg}', { eager: true, as: 'url' });
 
 function getLogoFor(code) {
@@ -16,7 +13,7 @@ function getLogoFor(code) {
 }
 
 const teamNames = {
-  ATL: 'Atlanta Hawks', BOS: 'Boston Celtics', BKN: 'Brooklyn Nets', CHA: 'Charlotte Hornets', CHI: 'Chicago Bulls',
+  ATL: 'Atlanta Hawks', BOS: 'Boston Celtics', BRK: 'Brooklyn Nets', CHA: 'Charlotte Hornets', CHI: 'Chicago Bulls',
   CLE: 'Cleveland Cavaliers', DAL: 'Dallas Mavericks', DEN: 'Denver Nuggets', DET: 'Detroit Pistons', GSW: 'Golden State Warriors',
   HOU: 'Houston Rockets', IND: 'Indiana Pacers', LAC: 'LA Clippers', LAL: 'Los Angeles Lakers', MEM: 'Memphis Grizzlies',
   MIA: 'Miami Heat', MIL: 'Milwaukee Bucks', MIN: 'Minnesota Timberwolves', NOP: 'New Orleans Pelicans', NYK: 'New York Knicks',
@@ -85,14 +82,14 @@ const Team = () => {
     <div className="mx-auto max-w-6xl">
       <h2 className="text-2xl font-bold mb-4">Teams</h2>
 
-      {/* Team list */}
+  {/* Team list */}
       {!selectedTeam && (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
           {teamsList.map((t) => (
             <button
               key={t.code}
               onClick={() => setSelectedTeam(t.code)}
-              className="flex items-center gap-3 text-left p-3 border rounded hover:shadow-md"
+              className="flex items-center gap-3 text-left p-3 border rounded hover:shadow-md cursor-pointer"
             >
               <img src={getLogoFor(t.code)} alt={`${t.code} logo`} className="w-10 h-10 object-contain" />
               <div>
@@ -109,7 +106,7 @@ const Team = () => {
         <div>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <button onClick={() => setSelectedTeam(null)} className="px-3 py-1 rounded border mr-2 mb-2"><ArrowLeft/></button>
+              <button onClick={() => setSelectedTeam(null)} className="px-3 py-1 rounded border mr-2 mb-2 cursor-pointer">← Back</button>
               <span className="text-xl font-semibold flex items-center gap-3">
                 <img src={getLogoFor(selectedTeam)} alt={`${selectedTeam} logo`} className="w-10 h-10 object-contain" />
                 <span>{teamNames[selectedTeam]} ({selectedTeam})</span>
