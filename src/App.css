@@ -1,0 +1,6 @@
+/* Small helper to increase text legibility on the gradient top bar */
+.topbar-text-shadow {
+	text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+}
+
+/* If you prefer a more subtle gradient or different stops, you can override the Tailwind classes here. */
