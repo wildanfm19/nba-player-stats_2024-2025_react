@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import "../App.css";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -28,6 +28,41 @@ function Home() {
     fetchPlayers();
   }, []);
 
+  const [query, setQuery] = useState('');
+
+  // Debounce the user input so we don't filter on every keystroke
+  const [debouncedQuery, setDebouncedQuery] = useState(query);
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(query), 500); // 500ms debounce
+    return () => clearTimeout(t);
+  }, [query]);
+
+  // Memoize filtered results so filtering only runs when players or debouncedQuery change
+  const filteredPlayers = useMemo(() => {
+    if (!debouncedQuery) return players;
+    const q = debouncedQuery.toLowerCase();
+    return players.filter((p) =>
+      (p.player && p.player.toLowerCase().includes(q)) ||
+      (p.team && p.team.toLowerCase().includes(q)) ||
+      (p.rk && String(p.rk).includes(q))
+    );
+  }, [players, debouncedQuery]);
+
+  // Simple client-side pagination to avoid rendering massive tables at once
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(100);
+  const totalPages = Math.max(1, Math.ceil(filteredPlayers.length / pageSize));
+
+  useEffect(() => {
+    // reset to first page when filter or pageSize changes
+    setPage(1);
+  }, [debouncedQuery, pageSize]);
+
+  const pagedPlayers = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return filteredPlayers.slice(start, start + pageSize);
+  }, [filteredPlayers, page, pageSize]);
+
   return (
     <div className="min-h-screen bg-white text-gray-800">
       {loading ? (
@@ -49,8 +84,51 @@ function Home() {
             </h1>
           </div>
 
+          <div className="px-6 pb-4 max-w-4xl mx-auto">
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Search players</label>
+              <div className="relative">
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search by name, team or rank..."
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                {query && (
+                  <button
+                    onClick={() => setQuery('')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-gray-500 hover:text-gray-700"
+                    aria-label="Clear"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
           <div className="px-6 pb-10">
-            <PlayersTable players={players} />
+            <PlayersTable players={pagedPlayers} />
+
+            {/* Pagination controls */}
+            {filteredPlayers.length > pageSize && (
+              <div className="mt-4 flex items-center justify-between max-w-4xl mx-auto">
+                <div className="text-sm text-gray-600">Showing {Math.min(filteredPlayers.length, page * pageSize)} of {filteredPlayers.length}</div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                    className="px-3 py-1 rounded border"
+                  >Prev</button>
+                  <div className="text-sm">Page {page} / {Math.max(1, Math.ceil(filteredPlayers.length / pageSize))}</div>
+                  <button
+                    onClick={() => setPage((p) => Math.min(Math.ceil(filteredPlayers.length / pageSize), p + 1))}
+                    disabled={page >= Math.ceil(filteredPlayers.length / pageSize)}
+                    className="px-3 py-1 rounded border"
+                  >Next</button>
+                </div>
+              </div>
+            )}
           </div>
         </>
       )}
