@@ -8,9 +8,9 @@ const NavLinks = () => {
   const linkClass = "text-white px-3 py-1 hover:underline flex items-center gap-2";
   return (
     <>
-      <NavLink to="/about" className={linkClass}><RiTeamLine size={16}/><span className="hidden sm:inline">Teams</span></NavLink>
-      <NavLink to="/blog" className={linkClass}>Blog</NavLink>
-      <NavLink to="/projects" className={linkClass}>Projects</NavLink>
+      <NavLink to="/home" className={linkClass}><RiTeamLine size={16}/><span className="hidden sm:inline">Home</span></NavLink>
+      <NavLink to="/team" className={linkClass}>Team</NavLink>
+      <NavLink to="/position" className={linkClass}>Position</NavLink>
     </>
   );
 };
