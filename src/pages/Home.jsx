@@ -120,15 +120,18 @@ function Home() {
 
             {/* Pagination controls */}
             {filteredPlayers.length > pageSize && (
-              <div className="mt-4 flex items-center justify-between max-w-4xl mx-auto ">
-                <div className="text-sm text-gray-600"><strong>Showing {Math.min(filteredPlayers.length, page * pageSize)} of {filteredPlayers.length}</strong> </div>
-                <div className="flex items-center gap-2">
+              <div className="mt-4 max-w-4xl mx-auto">
+                <div className="flex items-center justify-center gap-4">
+                  <div className="text-sm text-gray-600"><strong>Showing {Math.min(filteredPlayers.length, page * pageSize)} of {filteredPlayers.length}</strong></div>
+
                   <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page === 1}
                     className="px-3 py-1 rounded border cursor-pointer bg-black text-white"
                   >Prev</button>
-                  <div className="text-sm">Page {page} / {Math.max(1, Math.ceil(filteredPlayers.length / pageSize))}</div>
+
+                  <div className="text-sm text-gray-600">Page {page} / {Math.max(1, Math.ceil(filteredPlayers.length / pageSize))}</div>
+
                   <button
                     onClick={() => setPage((p) => Math.min(Math.ceil(filteredPlayers.length / pageSize), p + 1))}
                     disabled={page >= Math.ceil(filteredPlayers.length / pageSize)}
