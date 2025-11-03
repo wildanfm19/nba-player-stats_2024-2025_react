@@ -1,4 +1,4 @@
-import { Menu, X } from "lucide-react";
+import { HomeIcon, Menu, Shirt, Users, X } from "lucide-react";
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { RiTeamLine } from "react-icons/ri";
@@ -8,9 +8,9 @@ const NavLinks = () => {
   const linkClass = "text-white px-3 py-1 hover:underline flex items-center gap-2";
   return (
     <>
-      <NavLink to="/home" className={linkClass}><RiTeamLine size={16}/><span className="hidden sm:inline">Home</span></NavLink>
-      <NavLink to="/team" className={linkClass}>Team</NavLink>
-      <NavLink to="/position" className={linkClass}>Position</NavLink>
+      <NavLink to="/home" className={linkClass}><HomeIcon size={16}/><span className="hidden sm:inline">Home</span></NavLink>
+      <NavLink to="/team" className={linkClass}><Users size={16}/> <span className="hidden sm:inline">Team</span></NavLink>
+      <NavLink to="/position" className={linkClass}><Shirt size={16}/> <span className="hidden sm:inline">Position</span></NavLink>
     </>
   );
 };

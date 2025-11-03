@@ -118,13 +118,13 @@ function Home() {
                   <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page === 1}
-                    className="px-3 py-1 rounded border"
+                    className="px-3 py-1 rounded border cursor-pointer"
                   >Prev</button>
                   <div className="text-sm">Page {page} / {Math.max(1, Math.ceil(filteredPlayers.length / pageSize))}</div>
                   <button
                     onClick={() => setPage((p) => Math.min(Math.ceil(filteredPlayers.length / pageSize), p + 1))}
                     disabled={page >= Math.ceil(filteredPlayers.length / pageSize)}
-                    className="px-3 py-1 rounded border"
+                    className="px-3 py-1 rounded border cursor-pointer"
                   >Next</button>
                 </div>
               </div>
