@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useTransition } from "react";
 import "../App.css";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -16,7 +16,9 @@ function Home() {
     try {
       setLoading(true);
       const response = await axios.get("http://localhost:8080/api/player/stats/all");
-      setPlayers(response.data);
+      // Precompute a normalized name to make subsequent searches much cheaper
+      const data = (response.data || []).map((p) => ({ ...p, _normalizedName: (p.player || '').normalize && p.player.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() }));
+      setPlayers(data);
     } catch (error) {
       console.error("Error fetching players:", error);
     } finally {
@@ -29,6 +31,13 @@ function Home() {
   }, []);
 
   const [query, setQuery] = useState('');
+  const [_isPending, startTransition] = useTransition();
+
+  // normalize function: remove diacritics and lower-case for reliable matching
+  const normalize = (s) => {
+    if (!s) return "";
+    return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  };
 
   // Debounce the user input so we don't filter on every keystroke
   const [debouncedQuery, setDebouncedQuery] = useState(query);
@@ -38,28 +47,25 @@ function Home() {
   }, [query]);
 
   // Memoize filtered results so filtering only runs when players or debouncedQuery change
+  // To avoid recomputing diacritic stripping for every player on each filter, we'll rely on
+  // a precomputed `_normalizedName` field added when players are fetched.
   const filteredPlayers = useMemo(() => {
     if (!debouncedQuery) return players;
-
-    // normalize function: remove diacritics and lower-case for reliable matching
-    const normalize = (s) => {
-      if (!s) return "";
-      // decompose combined letters then strip diacritic marks
-      return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-    };
 
     const q = normalize(debouncedQuery);
 
     // Only match player names now (ignore team and rank for this search mode)
     return players.filter((p) => {
       if (!p || !p.player) return false;
-      return normalize(p.player).includes(q);
+      // use precomputed normalized name when available
+      const nameNorm = p._normalizedName || normalize(p.player);
+      return nameNorm.includes(q);
     });
   }, [players, debouncedQuery]);
 
   // Simple client-side pagination to avoid rendering massive tables at once
   const [page, setPage] = useState(1);
-  const pageSize = 100; // fixed page size to avoid extra state
+  const pageSize = 30; // smaller page size to reduce DOM render cost
 
   useEffect(() => {
     // reset to first page when filter or pageSize changes
@@ -98,7 +104,11 @@ function Home() {
               <div className="relative">
                 <input
                   value={query}
-                  onChange={(e) => setQuery(e.target.value)}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    // Mark this update as low-priority so typing stays responsive
+                    startTransition(() => setQuery(v));
+                  }}
                   placeholder="Search by name"
                   className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />

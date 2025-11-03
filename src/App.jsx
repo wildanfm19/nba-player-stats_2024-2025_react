@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Team from "./pages/Team";
 import Position from "./pages/Position";
+import PositionDetail from "./pages/PositionDetail";
 import MainLayout from "./layout/MainLayout";
 
 function App() {
@@ -37,6 +38,14 @@ function App() {
         element={
           <MainLayout>
             <Position />
+          </MainLayout>
+        }
+      />
+      <Route
+        path="/position/:pos"
+        element={
+          <MainLayout>
+            <PositionDetail />
           </MainLayout>
         }
       />

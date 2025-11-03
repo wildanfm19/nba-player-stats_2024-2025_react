@@ -27,7 +27,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function PlayersTable({ players = [] }) {
+function PlayersTable({ players = [] }) {
   return (
     // dark Paper so the table fits the app dark theme
     <TableContainer component={Paper} className="shadow-md bg-gray-800 text-white">
@@ -50,7 +50,7 @@ export default function PlayersTable({ players = [] }) {
         </TableHead>
         <TableBody>
           {players.map((p) => (
-            <StyledTableRow key={p.id ?? p.rk ?? p.player}>
+            <StyledTableRow key={p.id ?? `${p.player}-${p.team}`}> 
               <StyledTableCell component="th" scope="row">
                 {p.rk}
               </StyledTableCell>
@@ -72,3 +72,6 @@ export default function PlayersTable({ players = [] }) {
     </TableContainer>
   );
 }
+
+// Memoize to avoid re-rendering the large table when parent updates (e.g., typing in search)
+export default React.memo(PlayersTable);

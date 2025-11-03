@@ -15,6 +15,20 @@ const MainLayout = ({ children }) => {
 
       {/* Page Content */}
       <div className="px-6 py-8">{children}</div>
+
+      {/* Footer */}
+      <footer className="mt-8 border-t bg-gray-50">
+        <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-sm text-gray-600">© {new Date().getFullYear()} NBA Stats — Built for learning & demo</div>
+
+          <nav className="flex items-center gap-4">
+            <a href="/" className="text-sm text-gray-700 hover:underline">Home</a>
+            <a href="/team" className="text-sm text-gray-700 hover:underline">Teams</a>
+            <a href="/position" className="text-sm text-gray-700 hover:underline">Positions</a>
+            <a href="https://github.com/wildanfm19" target="_blank" rel="noreferrer" className="text-sm text-gray-500 hover:underline">GitHub</a>
+          </nav>
+        </div>
+      </footer>
     </div>
   );
 };
