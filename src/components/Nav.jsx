@@ -24,8 +24,9 @@ const Nav = () => {
 
   return (
     <>
+      {/* Desktop: show links inside a black rounded container on the right */}
       <nav className="flex items-center">
-        <div className="hidden md:flex md:items-center md:space-x-2">
+        <div className="hidden md:flex md:items-center md:space-x-2 bg-black rounded-md px-3 py-1">
           <NavLinks />
         </div>
         <div className="md:hidden">
@@ -34,7 +35,8 @@ const Nav = () => {
       </nav>
 
       {isOpen && (
-        <div className="flex basis-full flex-col items-center bg-gradient-to-b from-blue-900 via-blue-800 to-blue-400 text-white w-full py-2 md:hidden topbar-text-shadow">
+        // Mobile dropdown: full-width black background matching the desktop nav
+        <div className="flex basis-full flex-col items-center bg-black text-white w-full py-2 md:hidden topbar-text-shadow">
           <NavLinks />
         </div>
       )}

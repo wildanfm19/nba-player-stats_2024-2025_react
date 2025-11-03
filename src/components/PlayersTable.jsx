@@ -14,7 +14,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
+    fontSize: 12,
   },
 }));
 
@@ -29,7 +29,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function PlayersTable({ players = [] }) {
   return (
-    <TableContainer component={Paper} className="shadow-md">
+    // dark Paper so the table fits the app dark theme
+    <TableContainer component={Paper} className="shadow-md bg-gray-800 text-white">
       <Table sx={{ minWidth: 700 }} aria-label="players table">
         <TableHead>
           <TableRow>
@@ -44,6 +45,7 @@ export default function PlayersTable({ players = [] }) {
             <StyledTableCell align="right">FG%</StyledTableCell>
             <StyledTableCell align="right">3P%</StyledTableCell>
             <StyledTableCell align="right">FT%</StyledTableCell>
+             <StyledTableCell align="right">Awards</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -62,6 +64,7 @@ export default function PlayersTable({ players = [] }) {
               <StyledTableCell align="right">{p.fgPercent}</StyledTableCell>
               <StyledTableCell align="right">{p.threePPercent}</StyledTableCell>
               <StyledTableCell align="right">{p.ftPercent}</StyledTableCell>
+              <StyledTableCell align="right">{p.awards}</StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
