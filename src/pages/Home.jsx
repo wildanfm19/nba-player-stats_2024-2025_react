@@ -42,55 +42,10 @@ function Home() {
     if (!debouncedQuery) return players;
     const q = debouncedQuery.toLowerCase();
 
-    // map official team abbreviations to full names (extendable)
-    const teamNames = {
-      ATL: 'Atlanta Hawks', BOS: 'Boston Celtics', BKN: 'Brooklyn Nets', CHA: 'Charlotte Hornets', CHI: 'Chicago Bulls',
-      CLE: 'Cleveland Cavaliers', DAL: 'Dallas Mavericks', DEN: 'Denver Nuggets', DET: 'Detroit Pistons', GSW: 'Golden State Warriors',
-      HOU: 'Houston Rockets', IND: 'Indiana Pacers', LAC: 'LA Clippers', LAL: 'Los Angeles Lakers', MEM: 'Memphis Grizzlies',
-      MIA: 'Miami Heat', MIL: 'Milwaukee Bucks', MIN: 'Minnesota Timberwolves', NOP: 'New Orleans Pelicans', NYK: 'New York Knicks',
-      OKC: 'Oklahoma City Thunder', ORL: 'Orlando Magic', PHI: 'Philadelphia 76ers', PHX: 'Phoenix Suns', POR: 'Portland Trail Blazers',
-      SAC: 'Sacramento Kings', SAS: 'San Antonio Spurs', TOR: 'Toronto Raptors', UTA: 'Utah Jazz', WSH: 'Washington Wizards'
-    };
-
-    // common aliases / nicknames mapping to abbreviations (lowercase keys)
-    const aliasMap = {
-      'bucks': 'MIL', 'milwaukee': 'MIL', 'milwaukee bucks': 'MIL',
-      'warriors': 'GSW', 'golden state': 'GSW', 'golden state warriors': 'GSW',
-      'lakers': 'LAL', 'clippers': 'LAC', 'suns': 'PHX', 'heat': 'MIA',
-      'celtics': 'BOS', 'bulls': 'CHI', 'nets': 'BKN', 'raptors': 'TOR', 'knicks': 'NYK'
-    };
-
-    // helper to normalize team code or full name, and check aliases
-    const teamMatchesQuery = (teamValue) => {
-      if (!teamValue) return false;
-      const code = String(teamValue).toUpperCase();
-      const full = (teamNames[code] || teamValue).toLowerCase();
-      const simple = String(teamValue).toLowerCase();
-
-      // direct substring match against full name or raw value
-      if (full.includes(q) || simple.includes(q)) return true;
-
-      // alias map (exact or partial) — check if query maps to an abbreviation that equals the row code
-      if (aliasMap[q]) {
-        return aliasMap[q] === code;
-      }
-
-      // also check if any alias key is contained in the query or full name (helps with multi-word queries)
-      for (const [alias, abbr] of Object.entries(aliasMap)) {
-        if (q.includes(alias) && abbr === code) return true;
-        if (full.includes(alias) && abbr === code) return true;
-      }
-
-      // finally, allow matching against the code itself
-      return code.includes(q.toUpperCase());
-    };
-
+    // Only match player names now (ignore team and rank for this search mode)
     return players.filter((p) => {
-      const nameMatch = p.player && p.player.toLowerCase().includes(q);
-      const rankMatch = p.rk && String(p.rk).includes(q);
-      const teamMatch = teamMatchesQuery(p.team);
-
-      return nameMatch || teamMatch || rankMatch;
+      if (!p || !p.player) return false;
+      return p.player.toLowerCase().includes(q);
     });
   }, [players, debouncedQuery]);
 
@@ -136,7 +91,7 @@ function Home() {
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search by name, team or rank..."
+                  placeholder="Search by name"
                   className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 {query && (
