@@ -40,12 +40,20 @@ function Home() {
   // Memoize filtered results so filtering only runs when players or debouncedQuery change
   const filteredPlayers = useMemo(() => {
     if (!debouncedQuery) return players;
-    const q = debouncedQuery.toLowerCase();
+
+    // normalize function: remove diacritics and lower-case for reliable matching
+    const normalize = (s) => {
+      if (!s) return "";
+      // decompose combined letters then strip diacritic marks
+      return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    };
+
+    const q = normalize(debouncedQuery);
 
     // Only match player names now (ignore team and rank for this search mode)
     return players.filter((p) => {
       if (!p || !p.player) return false;
-      return p.player.toLowerCase().includes(q);
+      return normalize(p.player).includes(q);
     });
   }, [players, debouncedQuery]);
 
@@ -112,19 +120,19 @@ function Home() {
 
             {/* Pagination controls */}
             {filteredPlayers.length > pageSize && (
-              <div className="mt-4 flex items-center justify-between max-w-4xl mx-auto">
-                <div className="text-sm text-gray-600">Showing {Math.min(filteredPlayers.length, page * pageSize)} of {filteredPlayers.length}</div>
+              <div className="mt-4 flex items-center justify-between max-w-4xl mx-auto ">
+                <div className="text-sm text-gray-600"><strong>Showing {Math.min(filteredPlayers.length, page * pageSize)} of {filteredPlayers.length}</strong> </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page === 1}
-                    className="px-3 py-1 rounded border cursor-pointer"
+                    className="px-3 py-1 rounded border cursor-pointer bg-black text-white"
                   >Prev</button>
                   <div className="text-sm">Page {page} / {Math.max(1, Math.ceil(filteredPlayers.length / pageSize))}</div>
                   <button
                     onClick={() => setPage((p) => Math.min(Math.ceil(filteredPlayers.length / pageSize), p + 1))}
                     disabled={page >= Math.ceil(filteredPlayers.length / pageSize)}
-                    className="px-3 py-1 rounded border cursor-pointer"
+                    className="px-3 py-1 rounded border cursor-pointer bg-black text-white"
                   >Next</button>
                 </div>
               </div>
