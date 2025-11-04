@@ -1,43 +1,71 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import nbaLogo from '../assets/images/nba-logo.png'
+
+import pointGuardPhoto from '../assets/images/position/PG.jpg'
+import shootingGuardPhoto from '../assets/images/position/SG.jpg'
+import smallForwardPhoto from '../assets/images/position/SF.jpg'
+import powerForwardPhoto from '../assets/images/position/PF.jpg'
+import centerPhoto from '../assets/images/position/C.jpg'
 
 const positions = [
-  { key: 'PG', label: 'Point Guard' },
-  { key: 'SG', label: 'Shooting Guard' },
-  { key: 'SF', label: 'Small Forward' },
-  { key: 'PF', label: 'Power Forward' },
-  { key: 'C', label: 'Center' },
+  { key: 'PG', label: 'Point Guard', photo: pointGuardPhoto },
+  { key: 'SG', label: 'Shooting Guard'  , photo: shootingGuardPhoto},
+  { key: 'SF', label: 'Small Forward' , photo: smallForwardPhoto},
+  { key: 'PF', label: 'Power Forward' , photo : powerForwardPhoto},
+  { key: 'C', label: 'Center' , photo: centerPhoto},
 ]
+
+const Card = ({ pos }) => {
+  const [imgError, setImgError] = useState(false)
+  const imageSrc = pos.photo || ''
+  
+
+  return (
+    <Link
+      to={`/position/${pos.key}`}
+      className="group block rounded-xl overflow-hidden shadow-lg border border-gray-200 hover:shadow-2xl transform hover:-translate-y-1 transition-all w-full"
+    >
+      
+      <div
+        className="relative w-full bg-gray-200 overflow-hidden"
+        style={{ aspectRatio: '16 / 9' }}
+      >
+        {imageSrc && !imgError ? (
+          <>
+            <img
+              src={imageSrc}
+              alt={pos.label}
+              onError={() => setImgError(true)}
+              loading="lazy"
+              className="relative z-10 w-full h-full object-cover object-center block bg-gray-100"
+            />
+           
+          </>
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-3xl font-bold text-gray-700">{pos.key}</div>
+          </div>
+        )}
+        {/* Hover text (appears on hover) */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none z-40">
+          <div className="text-6xl font-extrabold text-white opacity-0 transform translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">{pos.key}</div>
+          <div className="text-lg text-white mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">{pos.label}</div>
+        </div>
+      </div>
+    </Link>
+  )
+}
 
 const Position = () => {
   return (
     <div className="min-h-screen bg-white text-gray-800 px-6 py-10">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold text-center mb-8">Browse by Position</h1>
 
         {/* First row: up to 3 cards as a grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {positions.slice(0, 3).map((pos) => (
-            <Link
-              key={pos.key}
-              to={`/position/${pos.key}`}
-              className="group block rounded-xl shadow-lg border border-gray-200 hover:shadow-2xl transform hover:-translate-y-1 transition-all bg-white"
-            >
-              <div className="flex items-center gap-6 p-4">
-                {/* Large photo area on the left */}
-                <div className="w-40 h-40 shrink-0 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
-                  <img src={nbaLogo} alt="logo" className="w-full h-full object-cover" />
-                </div>
-
-                {/* Textual content on the right */}
-                <div className="flex-1">
-                  <div className="text-4xl font-extrabold text-black tracking-tight">{pos.key}</div>
-                  <div className="text-lg text-gray-600 mt-1">{pos.label}</div>
-                  <div className="mt-4 text-sm text-gray-500 opacity-70">Click to view all {pos.label} players in a table.</div>
-                </div>
-              </div>
-            </Link>
+            <Card key={pos.key} pos={pos} />
           ))}
         </div>
 
@@ -45,22 +73,9 @@ const Position = () => {
         {positions.length > 3 && (
           <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-6">
             {positions.slice(3).map((pos) => (
-              <Link
-                key={pos.key}
-                to={`/position/${pos.key}`}
-                className="group block rounded-xl shadow-lg border border-gray-200 hover:shadow-2xl transform hover:-translate-y-1 transition-all bg-white w-full sm:w-auto max-w-2xl"
-              >
-                <div className="flex items-center gap-6 p-4">
-                  <div className="w-40 h-40 shrink-0 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
-                    <img src={nbaLogo} alt="logo" className="w-full h-full object-cover" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-4xl font-extrabold text-black tracking-tight">{pos.key}</div>
-                    <div className="text-lg text-gray-600 mt-1">{pos.label}</div>
-                    <div className="mt-4 text-sm text-gray-500 opacity-70">Click to view all {pos.label} players in a table.</div>
-                  </div>
-                </div>
-              </Link>
+              <div className="w-full sm:w-5/12" key={pos.key}>
+                <Card pos={pos} />
+              </div>
             ))}
           </div>
         )}

@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "../components/Header";
 import Nav from "../components/Nav";
+import { Github, GithubIcon, InstagramIcon } from "lucide-react";
 
 const MainLayout = ({ children }) => {
   return (
@@ -22,10 +23,9 @@ const MainLayout = ({ children }) => {
           <div className="text-sm text-gray-600">© {new Date().getFullYear()} NBA Stats — Built for learning & demo</div>
 
           <nav className="flex items-center gap-4">
-            <a href="/" className="text-sm text-gray-700 hover:underline">Home</a>
-            <a href="/team" className="text-sm text-gray-700 hover:underline">Teams</a>
-            <a href="/position" className="text-sm text-gray-700 hover:underline">Positions</a>
-            <a href="https://github.com/wildanfm19" target="_blank" rel="noreferrer" className="text-sm text-gray-500 hover:underline">GitHub</a>
+            <a href="https://github.com/wildanfm19" target="_blank" rel="noreferrer" className="text-sm text-black hover:underline"><GithubIcon/></a>
+            <a href="https://www.instagram.com/wildnfm/" target="_blank" rel="noreferrer" className="text-sm text-black hover:underline"><InstagramIcon/></a>
+
           </nav>
         </div>
       </footer>
