@@ -1,18 +1,13 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import axios from 'axios'
 import PlayersTable from '../components/PlayersTable'
-import nbaLogo from '../assets/images/nba-logo.png'
 
-const teamLogos = import.meta.glob('../assets/images/teams/*.{png,jpg,svg}', { eager: true, as: 'url' })
-
+// Semua logo tim sekarang diakses dari folder public
 function getLogoFor(code) {
-  if (!code) return nbaLogo
-  const pngKey = `../assets/images/teams/${code}.png`
-  const svgKey = `../assets/images/teams/${code}.svg`
-  const jpgKey = `../assets/images/teams/${code}.jpg`
-  return teamLogos[pngKey] || teamLogos[svgKey] || teamLogos[jpgKey] || nbaLogo
+  return code ? `/teams/${code}.png` : '/nba-logo.png'
 }
 
+// Mapping nama tim
 const teamNames = {
   ATL: 'Atlanta Hawks', BOS: 'Boston Celtics', BRK: 'Brooklyn Nets', CHA: 'Charlotte Hornets', CHI: 'Chicago Bulls',
   CLE: 'Cleveland Cavaliers', DAL: 'Dallas Mavericks', DEN: 'Denver Nuggets', DET: 'Detroit Pistons', GSW: 'Golden State Warriors',
@@ -25,12 +20,12 @@ const teamNames = {
 const Team = () => {
   const [players, setPlayers] = useState([])
   const [selectedTeam, setSelectedTeam] = useState(null)
-   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/player/stats/all`);
+        const res = await axios.get(`${API_BASE_URL}/api/player/stats/all`)
         setPlayers(res.data || [])
       } catch (err) {
         console.error('Error fetching players for teams', err)
@@ -68,12 +63,12 @@ const Team = () => {
 
     return {
       count,
-      avgPts: (sum.pts / count) || 0,
-      avgAst: (sum.ast / count) || 0,
-      avgTrb: (sum.trb / count) || 0,
-      avgFg: (sum.fg / count) || 0,
-      avg3P: (sum.three / count) || 0,
-      avgFt: (sum.ft / count) || 0,
+      avgPts: sum.pts / count,
+      avgAst: sum.ast / count,
+      avgTrb: sum.trb / count,
+      avgFg: sum.fg / count,
+      avg3P: sum.three / count,
+      avgFt: sum.ft / count,
     }
   }, [teamPlayers])
 
