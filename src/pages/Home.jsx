@@ -10,12 +10,13 @@ import PlayersTable from "../components/PlayersTable";
 function Home() {
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   // Fetch player data from backend
   const fetchPlayers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:8080/api/player/stats/all");
+       const response = await axios.get(`${API_BASE_URL}/api/player/stats/all`);
       // Precompute a normalized name to make subsequent searches much cheaper
       const data = (response.data || []).map((p) => ({ ...p, _normalizedName: (p.player || '').normalize && p.player.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() }));
       setPlayers(data);

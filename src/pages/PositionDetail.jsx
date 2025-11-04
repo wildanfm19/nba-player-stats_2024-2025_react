@@ -9,13 +9,14 @@ const PositionDetail = () => {
   const { pos } = useParams()
   const [players, setPlayers] = useState([])
   const [loading, setLoading] = useState(true)
+   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     let mounted = true
     const fetchPlayers = async () => {
       try {
         setLoading(true)
-        const res = await axios.get('http://localhost:8080/api/player/stats/all')
+        const res = await axios.get(`${API_BASE_URL}/api/player/stats/all`);
         const data = (res.data || []).map((p) => ({ ...p, _normalizedName: (p.player || '')?.normalize ? p.player.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() : (p.player || '').toLowerCase() }))
         if (mounted) setPlayers(data)
       } catch (err) {

@@ -2,14 +2,15 @@ import React, { useEffect, useState, useMemo } from 'react'
 import axios from 'axios'
 import PlayersTable from '../components/PlayersTable'
 import nbaLogo from '../assets/images/nba-logo.png'
-const teamLogos = import.meta.glob('../assets/images/teams/*.{png,jpg,svg}', { eager: true, as: 'url' });
+
+const teamLogos = import.meta.glob('../assets/images/teams/*.{png,jpg,svg}', { eager: true, as: 'url' })
 
 function getLogoFor(code) {
-  if (!code) return nbaLogo;
-  const pngKey = `../assets/images/teams/${code}.png`;
-  const svgKey = `../assets/images/teams/${code}.svg`;
-  const jpgKey = `../assets/images/teams/${code}.jpg`;
-  return teamLogos[pngKey] || teamLogos[svgKey] || teamLogos[jpgKey] || nbaLogo;
+  if (!code) return nbaLogo
+  const pngKey = `../assets/images/teams/${code}.png`
+  const svgKey = `../assets/images/teams/${code}.svg`
+  const jpgKey = `../assets/images/teams/${code}.jpg`
+  return teamLogos[pngKey] || teamLogos[svgKey] || teamLogos[jpgKey] || nbaLogo
 }
 
 const teamNames = {
@@ -23,29 +24,27 @@ const teamNames = {
 
 const Team = () => {
   const [players, setPlayers] = useState([])
-  const [selectedTeam, setSelectedTeam] = useState(null) // team code, e.g. 'MIL'
+  const [selectedTeam, setSelectedTeam] = useState(null)
+   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/player/stats/all')
+        const res = await axios.get(`${API_BASE_URL}/api/player/stats/all`);
         setPlayers(res.data || [])
       } catch (err) {
         console.error('Error fetching players for teams', err)
       }
     }
-
     fetchPlayers()
   }, [])
 
-  // list of teams (use mapping keys) sorted by full name
   const teamsList = useMemo(() => {
     return Object.entries(teamNames)
       .map(([code, name]) => ({ code, name }))
       .sort((a, b) => a.name.localeCompare(b.name))
   }, [])
 
-  // players for the selected team
   const teamPlayers = useMemo(() => {
     if (!selectedTeam) return []
     return players.filter((p) => String(p.team).toUpperCase() === selectedTeam)
@@ -82,7 +81,6 @@ const Team = () => {
     <div className="mx-auto max-w-6xl">
       <h2 className="text-2xl font-bold mb-4">Teams</h2>
 
-  {/* Team list */}
       {!selectedTeam && (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
           {teamsList.map((t) => (
@@ -101,7 +99,6 @@ const Team = () => {
         </div>
       )}
 
-      {/* Selected team view */}
       {selectedTeam && (
         <div>
           <div className="flex items-center justify-between mb-4">
@@ -118,8 +115,6 @@ const Team = () => {
               </div>
             )}
           </div>
-
-          {/* Reuse PlayersTable to show roster/stats */}
           <PlayersTable players={teamPlayers} />
         </div>
       )}
