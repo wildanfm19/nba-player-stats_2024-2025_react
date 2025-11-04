@@ -1,33 +1,13 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import axios from 'axios'
 import CircularProgress from '@mui/material/CircularProgress'
 import Fade from '@mui/material/Fade'
 import PlayersTable from '../components/PlayersTable'
+import { usePlayers } from '../context/PlayersContext'
 
 const PositionDetail = () => {
   const { pos } = useParams()
-  const [players, setPlayers] = useState([])
-  const [loading, setLoading] = useState(true)
-   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-  useEffect(() => {
-    let mounted = true
-    const fetchPlayers = async () => {
-      try {
-        setLoading(true)
-        const res = await axios.get(`${API_BASE_URL}/api/player/stats/all`);
-        const data = (res.data || []).map((p) => ({ ...p, _normalizedName: (p.player || '')?.normalize ? p.player.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() : (p.player || '').toLowerCase() }))
-        if (mounted) setPlayers(data)
-      } catch (err) {
-        console.error('Error fetching players for position:', err)
-      } finally {
-        if (mounted) setLoading(false)
-      }
-    }
-    fetchPlayers()
-    return () => { mounted = false }
-  }, [pos])
+  const { players, loading } = usePlayers()
 
   // The dataset uses `pos` or `position` depending on backend; check both
   const normalizedPos = (pos || '').toUpperCase()

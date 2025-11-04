@@ -1,35 +1,14 @@
 import { useEffect, useState, useMemo, useTransition } from "react";
 import "../App.css";
-import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 import Fade from "@mui/material/Fade";
+import { usePlayers } from "../context/PlayersContext";
 
 // Components
 import PlayersTable from "../components/PlayersTable";
 
 function Home() {
-  const [players, setPlayers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-  // Fetch player data from backend
-  const fetchPlayers = async () => {
-    try {
-      setLoading(true);
-       const response = await axios.get(`${API_BASE_URL}/api/player/stats/all`);
-      // Precompute a normalized name to make subsequent searches much cheaper
-      const data = (response.data || []).map((p) => ({ ...p, _normalizedName: (p.player || '').normalize && p.player.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() }));
-      setPlayers(data);
-    } catch (error) {
-      console.error("Error fetching players:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPlayers();
-  }, []);
+  const { players, loading } = usePlayers();
 
   const [query, setQuery] = useState('');
   const [_isPending, startTransition] = useTransition();
